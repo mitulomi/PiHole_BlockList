@@ -1,0 +1,23 @@
+name: Update Blocklist
+
+on:
+  schedule:
+    - cron: '0 4 * * *' # Täglich um 04:00 Uhr UTC
+  workflow_dispatch: # Manueller Start
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-python@v4
+        with:
+          python-version: '3.9'
+      - run: pip install requests
+      - run: python main.py
+      - uses: stefanzweifel/git-auto-commit-action@v4
+        with:
+          commit_message: "Blocklist Update"
+          file_pattern: "pihole_blocklist.txt"
