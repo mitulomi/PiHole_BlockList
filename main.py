@@ -5,8 +5,8 @@ from datetime import datetime
 # --- KONFIGURATION ---
 
 # Eine sorgfältig ausgewählte Liste.
-# Wir haben die toten Bank-Listen entfernt und konzentrieren uns auf
-# große, gepflegte Listen, um deinen Pi-hole nicht zu überlasten.
+# Ich habe die toten Bank-Listen entfernt und konzentriere mich auf
+# große, gepflegte Listen, um den Pi-hole nicht zu überlasten.
 QUELLEN = [
     # --- Basis Listen (Werbung & Tracker) ---
     "https://raw.githubusercontent.com/StevenBlack/hosts/master/hosts",
@@ -31,7 +31,7 @@ QUELLEN = [
 
 OUTPUT_FILE = "pihole_blocklist.txt"
 
-# Whitelist: Diese Domains werden NIEMALS in deine Liste aufgenommen
+# Whitelist: Diese Domains werden NIEMALS in die Liste aufgenommen
 WHITELIST = {
     "google.com", "microsoft.com", "apple.com", "amazon.de", 
     "whatsapp.com", "netflix.com", "paypal.com"
