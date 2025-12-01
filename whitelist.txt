@@ -1,0 +1,7 @@
+google.com
+microsoft.com
+apple.com
+amazon.de
+whatsapp.com
+netflix.com
+paypal.com
