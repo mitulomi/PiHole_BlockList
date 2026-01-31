@@ -27,7 +27,7 @@ jobs:
           pip install requests idna
 
       - name: Run Aggregator Script
-        run: python your_script_name.py # Ersetze dies durch deinen Dateinamen
+        run: python main.py # Ersetze dies durch deinen Dateinamen
 
       - name: Check for changes
         id: git-check
