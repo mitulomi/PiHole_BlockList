@@ -1,38 +1,45 @@
-name: Update Blocklist
+name: Update Pi-hole Blocklist
+
 on:
-  workflow_dispatch:
   schedule:
-    - cron: '0 0 * * *'  # Täglich um Mitternacht
+    - cron: '0 4 * * *' # Täglich um 04:00 Uhr (häufiger als 1x pro Woche ist bei Malware-Listen ratsam)
+  workflow_dispatch:
 
 jobs:
   build:
     runs-on: ubuntu-latest
     permissions:
-      contents: write  # Wichtig: Berechtigung zum Schreiben in das Repository
+      contents: write # Wichtig für den Push zurück ins Repo
 
     steps:
-      - name: Checkout repository
+      - name: Checkout Repository
         uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
 
       - name: Set up Python
-        uses: actions/setup-python@v4
+        uses: actions/setup-python@v5
         with:
           python-version: '3.11'
+          cache: 'pip' # Beschleunigt die Action bei Folge-Runs
 
-      - name: Install dependencies
+      - name: Install Dependencies
         run: |
           python -m pip install --upgrade pip
           pip install requests idna
 
-      - name: Run python script
-        run: python main.py
+      - name: Run Aggregator Script
+        run: python your_script_name.py # Ersetze dies durch deinen Dateinamen
 
-      - name: Commit and push updated blocklist
+      - name: Check for changes
+        id: git-check
         run: |
-          git config --global user.name "GitHub Actions"
-          git config --global user.email "actions@github.com"
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add pihole_blocklist.txt
-          git commit -m "Update pihole_blocklist.txt" || echo "Keine Änderungen zum Committen"
+          # Prüft, ob es Änderungen gibt, um leere Commits zu vermeiden
+          git diff --staged --quiet || echo "changes=true" >> $GITHUB_OUTPUT
+
+      - name: Commit and Push
+        if: steps.git-check.outputs.changes == 'true'
+        run: |
+          git commit -m "Automatisches Update: $(date +'%Y-%m-%d %H:%M')"
           git push
