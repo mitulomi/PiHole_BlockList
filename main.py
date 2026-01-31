@@ -14,8 +14,8 @@ HEADERS = {
     'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36'
 }
 DOMAIN_REGEX = re.compile(
-    r'^(?!-)[a-z0-9-\p{L}]{1,63}(?:\.[a-z0-9-\p{L}]{1,63})+(?<!-)$',
-    re.IGNORECASE | re.UNICODE
+    r'^(?!-)[a-z0-9-\w]{1,63}(?:\.[a-z0-9-\w]{1,63})+(?<!-)$',
+    re.IGNORECASE
 )
 
 # --- Logging ---
