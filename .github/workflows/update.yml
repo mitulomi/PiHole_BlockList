@@ -11,7 +11,7 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
         with:
-          persist-credentials: false # Wichtig für den nachfolgenden Schritt
+          fetch-depth: 0  # Wichtig, um den gesamten Git-History zu laden
 
       - name: Set up Python
         uses: actions/setup-python@v4
@@ -32,6 +32,4 @@ jobs:
           git config --global user.email "actions@github.com"
           git add pihole_blocklist.txt
           git commit -m "Update pihole_blocklist.txt" || echo "Keine Änderungen zum Committen"
-          git push
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          git push https://${{ secrets.GITHUB_TOKEN }}@github.com/mitulomi/PiHole_BlockList.git HEAD:main
