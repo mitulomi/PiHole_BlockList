@@ -7,11 +7,14 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
+    permissions:
+      contents: write  # Wichtig: Berechtigung zum Schreiben in das Repository
+
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
         with:
-          fetch-depth: 0  # Wichtig, um den gesamten Git-History zu laden
+          fetch-depth: 0
 
       - name: Set up Python
         uses: actions/setup-python@v4
@@ -32,4 +35,4 @@ jobs:
           git config --global user.email "actions@github.com"
           git add pihole_blocklist.txt
           git commit -m "Update pihole_blocklist.txt" || echo "Keine Änderungen zum Committen"
-          git push https://${{ secrets.GITHUB_TOKEN }}@github.com/mitulomi/PiHole_BlockList.git HEAD:main
+          git push
