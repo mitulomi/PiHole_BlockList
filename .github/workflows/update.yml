@@ -1,22 +1,22 @@
 name: Update Pi-hole Blocklist
-
 on:
   schedule:
-    - cron: '0 4 * * *' # Täglich um 04:00 Uhr (häufiger als 1x pro Woche ist bei Malware-Listen ratsam)
+    - cron: '0 4 * * *' # Täglich um 04:00 Uhr
   workflow_dispatch:
-
 jobs:
   build:
     runs-on: ubuntu-latest
+    env:
+      # Hilft gegen den GitHub-Bug, der die Warnung fälschlich als Fehler ausgibt
+      FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true 
     permissions:
       contents: write # Wichtig für den Push zurück ins Repo
-
     steps:
       - name: Checkout Repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v7 # Update auf v7 (Volle Node 24 Unterstützung)
 
       - name: Set up Python
-        uses: actions/setup-python@v5
+        uses: actions/setup-python@v6 # Update auf v6
         with:
           python-version: '3.11'
           cache: 'pip' # Beschleunigt die Action bei Folge-Runs
