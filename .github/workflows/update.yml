@@ -1,12 +1,15 @@
 name: Update Pi-hole Blocklist
+
 on:
   schedule:
     - cron: '0 4 * * *' # Täglich um 04:00 Uhr
   workflow_dispatch:
+
 jobs:
   build:
     runs-on: ubuntu-latest
     env:
+      # Verhindert, dass Node.js 20 Warnungen den Build stoppen
       FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
     permissions:
       contents: write
@@ -33,7 +36,14 @@ jobs:
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add pihole_blocklist.txt
+          
+          # Entferne die alte, zu große Datei aus dem Repo (ignoriert Fehler, falls sie schon weg ist)
+          git rm -f pihole_blocklist.txt || true
+          
+          # Füge alle neu generierten Teil-Dateien hinzu
+          git add pihole_blocklist_part*.txt
+          
+          # Prüft, ob es Änderungen gibt, um leere Commits zu vermeiden
           git diff --staged --quiet || echo "changes=true" >> $GITHUB_OUTPUT
 
       - name: Commit and Push
