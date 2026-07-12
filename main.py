@@ -2,14 +2,15 @@ import requests
 import datetime
 
 # --- Konfiguration ---
-OUTPUT_FILE = "pihole_blocklist.txt"
+# Der Basisname für die aufgeteilten Dateien
+OUTPUT_BASE_NAME = "pihole_blocklist_part"
+# Maximale Anzahl an Domains pro Datei (2.500.000 = ca. 55 MB)
+CHUNK_SIZE = 2500000 
 
-# Simuliere einen echten Browser, um Blockaden (wie bei OISD) zu umgehen
 HEADERS = {
     'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36'
 }
 
-# Bereinigte URLs (OISD auf big.oisd.nl und HaGeZi auf jsDelivr CDN umgestellt)
 BLOCKLIST_URLS = [
     "https://urlhaus.abuse.ch/downloads/hostfile/",
     "https://raw.githubusercontent.com/StevenBlack/hosts/master/hosts",
@@ -36,7 +37,6 @@ def fetch_lists():
 
     for url in BLOCKLIST_URLS:
         try:
-            # Timeout auf 15 Sekunden gesetzt, damit ein hängender Server den Action-Run nicht blockiert
             response = requests.get(url, headers=HEADERS, timeout=15)
             response.raise_for_status()
             
@@ -45,16 +45,12 @@ def fetch_lists():
             
             for line in lines:
                 line = line.strip()
-                
-                # Ignoriere Kommentare und leere Zeilen
                 if not line or line.startswith('#') or line.startswith('!'):
                     continue
                     
-                # Extrahiere die Domain (falls im Hosts-Format geliefert, z.B. "0.0.0.0 bad-domain.com")
                 parts = line.split()
                 domain = parts[-1] if len(parts) > 0 else line
                 
-                # Ignoriere Standard-Lokaleinträge
                 if domain in ['localhost', '127.0.0.1', '0.0.0.0', 'broadcasthost']:
                     continue
                     
@@ -64,18 +60,24 @@ def fetch_lists():
             print(f"✅ {url}: {valid_domains} Domains")
             
         except requests.exceptions.RequestException as e:
-            # Fängt Timeouts, 403 Forbidden, 404 Not Found etc. ab
             print(f"❌ {url}: Download fehlgeschlagen ({e})")
 
     print("-" * 60)
-    print(f"Gesamtanzahl einzigartiger Domains nach Deduplizierung: {len(all_domains)}")
+    print(f"Gesamtanzahl einzigartiger Domains: {len(all_domains)}")
     
-    # In Datei schreiben (alphabetisch sortiert für saubere Git-Diffs)
-    with open(OUTPUT_FILE, 'w') as f:
-        for domain in sorted(all_domains):
-            f.write(f"{domain}\n")
-            
-    print(f"Erfolgreich in {OUTPUT_FILE} gespeichert.")
+    # --- NEU: Datei aufteilen (Splitting) ---
+    domains_list = sorted(list(all_domains))
+    
+    for i in range(0, len(domains_list), CHUNK_SIZE):
+        chunk = domains_list[i:i + CHUNK_SIZE]
+        part_num = (i // CHUNK_SIZE) + 1
+        filename = f"{OUTPUT_BASE_NAME}{part_num}.txt"
+        
+        with open(filename, 'w') as f:
+            for domain in chunk:
+                f.write(f"{domain}\n")
+                
+        print(f"Erfolgreich {len(chunk)} Domains in {filename} gespeichert.")
 
 if __name__ == "__main__":
     fetch_lists()
