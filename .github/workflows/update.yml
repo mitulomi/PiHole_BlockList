@@ -7,19 +7,18 @@ jobs:
   build:
     runs-on: ubuntu-latest
     env:
-      # Hilft gegen den GitHub-Bug, der die Warnung fälschlich als Fehler ausgibt
-      FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true 
+      FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
     permissions:
-      contents: write # Wichtig für den Push zurück ins Repo
+      contents: write
     steps:
       - name: Checkout Repository
-        uses: actions/checkout@v7 # Update auf v7 (Volle Node 24 Unterstützung)
+        uses: actions/checkout@v7
 
       - name: Set up Python
-        uses: actions/setup-python@v6 # Update auf v6
+        uses: actions/setup-python@v6
         with:
           python-version: '3.11'
-          cache: 'pip' # Beschleunigt die Action bei Folge-Runs
+          cache: 'pip'
 
       - name: Install Dependencies
         run: |
@@ -27,7 +26,7 @@ jobs:
           pip install requests idna
 
       - name: Run Aggregator Script
-        run: python main.py # Ersetze dies durch deinen Dateinamen
+        run: python main.py
 
       - name: Check for changes
         id: git-check
@@ -35,7 +34,6 @@ jobs:
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add pihole_blocklist.txt
-          # Prüft, ob es Änderungen gibt, um leere Commits zu vermeiden
           git diff --staged --quiet || echo "changes=true" >> $GITHUB_OUTPUT
 
       - name: Commit and Push
