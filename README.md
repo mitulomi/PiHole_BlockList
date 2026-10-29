@@ -12,7 +12,7 @@ Dieses Projekt wurde entwickelt, um Pi-hole Instanzen (insbesondere auf schwäch
 
 ## Die Blockliste (Raw Link)
 
-Füge einfach diese **eine URL** in deinem Pi-hole hinzu. Sie enthält bereits über 1 Million bereinigte Domains.
-
-```text
-[https://raw.githubusercontent.com/mitulomi/PiHole_BlockList/main/pihole_blocklist.txt](https://raw.githubusercontent.com/mitulomi/PiHole_BlockList/main/pihole_blocklist.txt)
+Füge einfach diese URLs in deinem Pi-hole hinzu. Sie enthält bereits über 1 Million bereinigte Domains.
+https://github.com/mitulomi/PiHole_BlockList/blob/main/pihole_blocklist_part1.txt
+https://github.com/mitulomi/PiHole_BlockList/blob/main/pihole_blocklist_part2.txt
+https://github.com/mitulomi/PiHole_BlockList/blob/main/pihole_blocklist_part3.txt
